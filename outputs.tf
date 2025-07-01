@@ -1,25 +1,3 @@
-output "client_configuration" {
-  value       = local.enabled ? join("", data.awsutils_ec2_client_vpn_export_client_config.default[*].client_configuration) : null
-  description = "VPN Client Configuration data."
-}
-
-output "full_client_configuration" {
-  value = local.export_client_certificate ? templatefile(
-    local.client_conf_tmpl_path,
-    {
-      cert        = module.self_signed_cert_root.certificate_pem,
-      private_key = join("", data.aws_ssm_parameter.root_key[*].value)
-      original_client_config = replace(
-        join("", data.awsutils_ec2_client_vpn_export_client_config.default[*].client_configuration),
-        "remote cvpn",
-        "remote ${module.this.id}.cvpn"
-      )
-    }
-  ) : ""
-  description = "Client configuration including client certificate and private key"
-  sensitive   = true
-}
-
 output "log_group_arn" {
   value       = local.logging_enabled ? module.cloudwatch_log.log_group_arn : null
   description = "The ARN of the CloudWatch Log Group used for Client VPN connection logging."
