@@ -263,12 +263,6 @@ resource "aws_ec2_client_vpn_route" "default" {
   }
 }
 
-data "awsutils_ec2_client_vpn_export_client_config" "default" {
-  count = local.enabled ? 1 : 0
-
-  id = join("", aws_ec2_client_vpn_endpoint.default[*].id)
-}
-
 data "aws_ssm_parameter" "root_key" {
   count = local.export_client_certificate ? 1 : 0
 
